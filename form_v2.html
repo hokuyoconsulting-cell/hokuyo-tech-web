@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>診断フォーム（テスト版）</title>
+<style>
+  :root {
+    --bg: #F3F2EE;
+    --panel: #FFFFFF;
+    --ink: #1F2A44;
+    --ink-soft: #4B5567;
+    --line: #DFDCD3;
+    --accent: #B08D57;
+    --accent-soft: #F1E7D6;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", sans-serif;
+    line-height: 1.7;
+    padding: 0 0 80px;
+  }
+  header {
+    padding: 40px 20px 24px;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+  }
+  header .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  header h1 {
+    font-family: "Noto Serif JP", serif;
+    font-size: 22px;
+    margin: 8px 0 6px;
+  }
+  header p {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+  main {
+    max-width: 640px;
+    margin: 32px auto;
+    padding: 0 16px;
+  }
+  .progress {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    padding: 10px 0;
+    font-size: 12px;
+    color: var(--ink-soft);
+    z-index: 5;
+  }
+  .progress-bar {
+    height: 4px;
+    background: var(--line);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 0.2s ease;
+  }
+  .q {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px 20px;
+    margin-bottom: 16px;
+  }
+  .q-label {
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  .q-text {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+  .choice {
+    display: block;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .choice:hover { border-color: var(--accent); }
+  .choice input { display: none; }
+  .choice.selected {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    font-weight: 700;
+  }
+  .rank-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+  .rank-row select {
+    width: 56px;
+    padding: 4px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  .rank-hint {
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+  .submit-area {
+    text-align: center;
+    margin-top: 28px;
+  }
+  button#submitBtn {
+    background: var(--ink);
+    color: #fff;
+    border: none;
+    padding: 14px 36px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  button#submitBtn:disabled {
+    background: #B8B8B8;
+    cursor: not-allowed;
+  }
+  .error-msg {
+    color: #B3261E;
+    font-size: 12px;
+    margin-top: 6px;
+    display: none;
+  }
+  .result-screen {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+  }
+  .result-screen h2 {
+    font-family: "Noto Serif JP", serif;
+    font-size: 20px;
+  }
+  .result-screen p {
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+  .debug-box {
+    margin-top: 30px;
+    background: #fff;
+    border: 1px dashed var(--line);
+    border-radius: var(--radius);
+    padding: 16px;
+    font-size: 11px;
+    color: var(--ink-soft);
+    white-space: pre-wrap;
+    word-break: break-all;
+    text-align: left;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">TEST VERSION</div>
+  <h1>あなたの判断パターン診断</h1>
+  <p>11の質問に答えてください。フリー入力はありません。</p>
+</header>
+
+<main>
+
+  <div class="progress">
+    回答状況：<span id="answeredCount">0</span> / 11
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+  <form id="diagForm">
+
+    <!-- Q1 -->
+    <div class="q" data-qid="q1">
+      <div class="q-label">Q1</div>
+      <div class="q-text">時間を忘れて没頭してしまうのは、次のどの場面に近いですか？</div>
+      <label class="choice"><input type="radio" name="q1" value="A">A. 何かを作ったり、形にしている時</label>
+      <label class="choice"><input type="radio" name="q1" value="B">B. 人と話したり、一緒に考えている時</label>
+      <label class="choice"><input type="radio" name="q1" value="C">C. 問題を分析したり、仕組みを理解している時</label>
+      <label class="choice"><input type="radio" name="q1" value="D">D. 目標に向かって段階的に進んでいる時</label>
+    </div>
+
+    <!-- Q2 -->
+    <div class="q" data-qid="q2">
+      <div class="q-label">Q2</div>
+      <div class="q-text">できれば避けたい仕事の頼まれ方は、次のどれに近いですか？</div>
+      <label class="choice"><input type="radio" name="q2" value="A">A. 細かいルールや手順を厳密に守るよう求められる</label>
+      <label class="choice"><input type="radio" name="q2" value="B">B. 大勢の前で意見を言うよう求められる</label>
+      <label class="choice"><input type="radio" name="q2" value="C">C. 前例のないことを自分の判断だけで進めるよう求められる</label>
+      <label class="choice"><input type="radio" name="q2" value="D">D. 人の感情的な対立の間に立つよう求められる</label>
+    </div>
+
+    <!-- Q3: ranking -->
+    <div class="q" data-qid="q3">
+      <div class="q-label">Q3</div>
+      <div class="q-text">次の状況のうち、「一番居心地が悪い」と感じる順に、1〜4の番号をつけてください。</div>
+      <div class="rank-hint">1＝最も居心地が悪い　→　4＝まだ我慢できる</div>
+      <div class="rank-row">
+        <select name="q3_r1"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+        毎日同じ作業の繰り返しを求められる
+      </div>
+      <div class="rank-row">
+        <select name="q3_r2"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+        成果が出るまで誰にも評価されない
+      </div>
+      <div class="rank-row">
+        <select name="q3_r3"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+        自分のやり方を否定されて別の方法を強制される
+      </div>
+      <div class="rank-row">
+        <select name="q3_r4"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+        チームの中で孤立して一人で進める
+      </div>
+      <div class="error-msg" id="q3-error">1〜4を、それぞれ1回ずつ使ってください。</div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="q" data-qid="q4">
+      <div class="q-label">Q4</div>
+      <div class="q-text">頑張れた瞬間を振り返ると、次のどれが一番近いですか？</div>
+      <label class="choice"><input type="radio" name="q4" value="A">A. 誰もやっていないやり方を見つけられた時</label>
+      <label class="choice"><input type="radio" name="q4" value="B">B. 困っている人の役に立てたと分かった時</label>
+      <label class="choice"><input type="radio" name="q4" value="C">C. 自分の中で完璧に近づけたと感じた時</label>
+      <label class="choice"><input type="radio" name="q4" value="D">D. 決めた期限や目標に間に合わせられた時</label>
+    </div>
+
+    <!-- Q5 -->
+    <div class="q" data-qid="q5">
+      <div class="q-label">Q5</div>
+      <div class="q-text">初めての大きな判断を任された時、実際に動き出せたきっかけに一番近いのはどれですか？</div>
+      <label class="choice"><input type="radio" name="q5" value="A">A. 目的や背景が十分に理解できた時</label>
+      <label class="choice"><input type="radio" name="q5" value="B">B. 信頼できる人からの後押しがあった時</label>
+      <label class="choice"><input type="radio" name="q5" value="C">C. 期限が迫って選択肢がなくなった時</label>
+      <label class="choice"><input type="radio" name="q5" value="D">D. 自分の中で腹落ちする理由が見つかった時</label>
+    </div>
+
+    <!-- Q6 -->
+    <div class="q" data-qid="q6">
+      <div class="q-label">Q6</div>
+      <div class="q-text">上司から仕事を頼まれるとして、次のどちらの方が自然に力を発揮できますか？</div>
+      <label class="choice"><input type="radio" name="q6" value="A">A. 「目的は説明するので、やり方はあなたに任せます」</label>
+      <label class="choice"><input type="radio" name="q6" value="B">B. 「理由は説明しません。この手順通りにやってください」</label>
+    </div>
+
+    <!-- Q7 -->
+    <div class="q" data-qid="q7">
+      <div class="q-label">Q7</div>
+      <div class="q-text">何かを達成した直後、実際にやりがちな行動はどれですか？</div>
+      <label class="choice"><input type="radio" name="q7" value="A">A. すぐ次の目標を探し始める</label>
+      <label class="choice"><input type="radio" name="q7" value="B">B. 誰かに報告したり共有したくなる</label>
+      <label class="choice"><input type="radio" name="q7" value="C">C. うまくいった理由を振り返って整理する</label>
+      <label class="choice"><input type="radio" name="q7" value="D">D. しばらくその余韻に浸る</label>
+    </div>
+
+    <!-- Q8 -->
+    <div class="q" data-qid="q8">
+      <div class="q-label">Q8</div>
+      <div class="q-text">計画通りにいかなかった時、最初にすることが多いのはどれですか？</div>
+      <label class="choice"><input type="radio" name="q8" value="A">A. 何が足りなかったか原因を洗い出す</label>
+      <label class="choice"><input type="radio" name="q8" value="B">B. 周りに相談する</label>
+      <label class="choice"><input type="radio" name="q8" value="C">C. とにかくやり方を変えてみる</label>
+      <label class="choice"><input type="radio" name="q8" value="D">D. 一旦距離を置いて考える</label>
+    </div>
+
+    <!-- Q9 -->
+    <div class="q" data-qid="q9">
+      <div class="q-label">Q9</div>
+      <div class="q-text">これまでの仕事で、「本当はこうしたい」と思いながら、条件や安定を優先して選んだことがある。</div>
+      <label class="choice"><input type="radio" name="q9" value="はい">はい</label>
+      <label class="choice"><input type="radio" name="q9" value="いいえ">いいえ</label>
+    </div>
+
+    <!-- Q10 -->
+    <div class="q" data-qid="q10">
+      <div class="q-label">Q10</div>
+      <div class="q-text">これまでで一番「よし、やるぞ」と思えたのはどんな時ですか？</div>
+      <label class="choice"><input type="radio" name="q10" value="A">A. 誰も手をつけていない課題を見つけた時</label>
+      <label class="choice"><input type="radio" name="q10" value="B">B. 「あなたにお願いしたい」と名指しで頼まれた時</label>
+      <label class="choice"><input type="radio" name="q10" value="C">C. 終わりが見えて、あと少しで完成すると分かった時</label>
+      <label class="choice"><input type="radio" name="q10" value="D">D. 自分のやり方が誰かの役に立つと分かった時</label>
+    </div>
+
+    <!-- Q11 -->
+    <div class="q" data-qid="q11">
+      <div class="q-label">Q11</div>
+      <div class="q-text">次の仕事なら、どちらの方が頑張れますか？</div>
+      <label class="choice"><input type="radio" name="q11" value="A">A. 初めてやる仕事だけど、「なぜこの仕事が必要なのか」を理解している</label>
+      <label class="choice"><input type="radio" name="q11" value="B">B. 何度も経験している仕事だけど、言われた通りにやるだけ</label>
+    </div>
+
+    <div class="submit-area">
+      <button type="submit" id="submitBtn" disabled>回答を送信する</button>
+      <div class="error-msg" id="submit-error">すべての質問に答えてください。</div>
+    </div>
+
+  </form>
+
+  <div class="result-screen" id="resultScreen">
+    <h2>送信しました</h2>
+    <p>回答を受け付けました。分析結果は追ってご案内します。</p>
+    <div class="debug-box" id="debugBox"></div>
+  </div>
+
+</main>
+
+<script>
+  // ▼ テスト用：new_B のWebhook URL
+  const WEBHOOK_URL = "https://hook.eu1.make.com/u7dsf4z6oxmgrbkemcluihmpzwhm2bgy";
+
+  const form = document.getElementById('diagForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const answeredCountEl = document.getElementById('answeredCount');
+  const progressFill = document.getElementById('progressFill');
+
+  // 選択式の見た目（選ばれたら枠を強調）
+  document.querySelectorAll('.choice input[type=radio]').forEach(input => {
+    input.addEventListener('change', () => {
+      const group = document.querySelectorAll(`input[name="${input.name}"]`);
+      group.forEach(i => i.closest('.choice').classList.remove('selected'));
+      input.closest('.choice').classList.add('selected');
+      updateProgress();
+    });
+  });
+
+  document.querySelectorAll('.rank-row select').forEach(sel => {
+    sel.addEventListener('change', updateProgress);
+  });
+
+  function getUrlParam(name) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(name) || '';
+  }
+
+  function isQ3Valid() {
+    const vals = ['q3_r1','q3_r2','q3_r3','q3_r4'].map(n => form[n].value);
+    if (vals.some(v => v === '')) return false;
+    const set = new Set(vals);
+    return set.size === 4; // 1〜4が重複なく使われているか
+  }
+
+  function updateProgress() {
+    const singleQs = ['q1','q2','q4','q5','q6','q7','q8','q9','q10','q11'];
+    let answered = 0;
+    singleQs.forEach(q => { if (form[q] && form[q].value) answered++; });
+    if (isQ3Valid()) answered++;
+
+    answeredCountEl.textContent = answered;
+    progressFill.style.width = (answered / 11 * 100) + '%';
+
+    document.getElementById('q3-error').style.display =
+      (['q3_r1','q3_r2','q3_r3','q3_r4'].some(n => form[n].value !== '') && !isQ3Valid())
+        ? 'block' : 'none';
+
+    submitBtn.disabled = (answered < 11);
+  }
+
+  form.addEventListener('change', updateProgress);
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (submitBtn.disabled) return;
+
+    const uid = getUrlParam('uid') || 'TEST_UID_' + Date.now();
+
+    const answers = {
+      q1: form.q1.value,
+      q2: form.q2.value,
+      q3_rank: {
+        "毎日同じ作業の繰り返しを求められる": form.q3_r1.value,
+        "成果が出るまで誰にも評価されない": form.q3_r2.value,
+        "自分のやり方を否定されて別の方法を強制される": form.q3_r3.value,
+        "チームの中で孤立して一人で進める": form.q3_r4.value
+      },
+      q4: form.q4.value,
+      q5: form.q5.value,
+      q6: form.q6.value,
+      q7: form.q7.value,
+      q8: form.q8.value,
+      q9: form.q9.value,
+      q10: form.q10.value,
+      q11: form.q11.value
+    };
+
+    const payload = {
+      uid: uid,
+      submitted_at: new Date().toISOString(),
+      answers: answers
+    };
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = '送信中…';
+
+    try {
+      await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      form.style.display = 'none';
+      document.querySelector('.progress').style.display = 'none';
+      document.getElementById('resultScreen').style.display = 'block';
+      document.getElementById('debugBox').textContent =
+        '【テスト用・送信内容の確認】\n' + JSON.stringify(payload, null, 2);
+
+    } catch (err) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = '回答を送信する';
+      alert('送信に失敗しました。通信環境を確認してもう一度お試しください。');
+      console.error(err);
+    }
+  });
+</script>
+
+</body>
+</html>

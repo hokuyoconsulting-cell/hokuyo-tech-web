@@ -168,6 +168,46 @@
     color: var(--ink-soft);
     font-size: 14px;
   }
+  .gpt-template {
+    width: 100%;
+    height: 160px;
+    font-size: 11px;
+    font-family: monospace;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #FAFAF7;
+    resize: vertical;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+  }
+  .copy-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .copied-msg {
+    display: none;
+    font-size: 12px;
+    color: var(--accent);
+    margin-left: 10px;
+  }
+  .json-paste {
+    width: 100%;
+    height: 120px;
+    font-size: 12px;
+    font-family: monospace;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    resize: vertical;
+    box-sizing: border-box;
+  }
   .debug-box {
     margin-top: 30px;
     background: #fff;
@@ -317,9 +357,54 @@
       <label class="choice"><input type="radio" name="q11" value="B">B. 何度も経験している仕事だけど、言われた通りにやるだけ</label>
     </div>
 
+    <!-- ChatGPT連携ステップ -->
+    <div class="q" data-qid="gpt">
+      <div class="q-label">STEP 2</div>
+      <div class="q-text">診断では、「あなたが思っている自分」と「普段の会話から見える行動パターン」を比較します。そのため、まず行動パターンのデータを作成します。以下をコピーして、ご自身のChatGPTに貼り付けてください。</div>
+
+      <textarea id="gptTemplate" readonly class="gpt-template">これまでの私との会話履歴を振り返り、次の8項目について、
+会話の中に表れている傾向を書き出してください。
+
+分析・評価・診断は行わないでください。理由や解説も書かないでください。
+出力は下記のJSON形式のみとし、前置きや後書きの文章は一切つけないでください。
+
+{
+  "energy_pattern": "",
+  "avoidance_pattern": "",
+  "value_hierarchy": ["", "", ""],
+  "self_narrative": "",
+  "decision_style": "",
+  "authority_pattern": "",
+  "achievement_language": "",
+  "obstacle_language": ""
+}
+
+各項目の意味：
+- energy_pattern：会話の中で熱量が上がっている話題・行動
+- avoidance_pattern：繰り返し避けている、または不満を言っている領域
+- value_hierarchy：会話の中で繰り返し重視されている価値観（優先順に3つ）
+- self_narrative：自分自身をどう語っているか（口癖・自己紹介の仕方）
+- decision_style：何かを決める時のスタイル
+- authority_pattern：ルールや他者評価への向き合い方
+- achievement_language：何を達成・成功として語っているか
+- obstacle_language：障害や失敗をどう語っているか
+
+情報が少ない項目は、無理に埋めず空欄のままにしてください。</textarea>
+
+      <button type="button" id="copyTemplateBtn" class="copy-btn">テンプレートをコピー</button>
+      <span class="copied-msg" id="copiedMsg">コピーしました</span>
+    </div>
+
+    <div class="q" data-qid="jsonpaste">
+      <div class="q-label">STEP 3</div>
+      <div class="q-text">ChatGPTが出力したJSONを、そのまま下に貼り付けてください。</div>
+      <textarea id="jsonPaste" class="json-paste" placeholder='{ "energy_pattern": ... }'></textarea>
+      <div class="error-msg" id="json-error">JSONの形式が正しくありません。ChatGPTの出力をそのまま（説明文などを含めずに）貼り付けてください。</div>
+    </div>
+
     <div class="submit-area">
       <button type="submit" id="submitBtn" disabled>回答を送信する</button>
-      <div class="error-msg" id="submit-error">すべての質問に答えてください。</div>
+      <div class="error-msg" id="submit-error">すべての質問に答え、JSONを貼り付けてください。</div>
     </div>
 
   </form>
@@ -355,6 +440,49 @@
     sel.addEventListener('change', updateProgress);
   });
 
+  // コピー機能
+  const gptTemplate = document.getElementById('gptTemplate');
+  const copyBtn = document.getElementById('copyTemplateBtn');
+  const copiedMsg = document.getElementById('copiedMsg');
+  copyBtn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(gptTemplate.value);
+    } catch (err) {
+      // クリップボードAPIが使えない環境向けのフォールバック
+      gptTemplate.removeAttribute('readonly');
+      gptTemplate.select();
+      document.execCommand('copy');
+      gptTemplate.setAttribute('readonly', 'true');
+    }
+    copiedMsg.style.display = 'inline';
+    setTimeout(() => { copiedMsg.style.display = 'none'; }, 2000);
+  });
+
+  // JSON貼り付けのバリデーション（形式チェックのみ・中身の空欄は許容）
+  const jsonPasteEl = document.getElementById('jsonPaste');
+  const jsonErrorEl = document.getElementById('json-error');
+
+  function isJsonValid() {
+    const text = jsonPasteEl.value.trim();
+    if (text === '') return false;
+    try {
+      JSON.parse(text);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  jsonPasteEl.addEventListener('input', () => {
+    const text = jsonPasteEl.value.trim();
+    if (text === '') {
+      jsonErrorEl.style.display = 'none';
+    } else {
+      jsonErrorEl.style.display = isJsonValid() ? 'none' : 'block';
+    }
+    updateProgress();
+  });
+
   function getUrlParam(name) {
     const params = new URLSearchParams(window.location.search);
     return params.get(name) || '';
@@ -380,7 +508,7 @@
       (['q3_r1','q3_r2','q3_r3','q3_r4'].some(n => form[n].value !== '') && !isQ3Valid())
         ? 'block' : 'none';
 
-    submitBtn.disabled = (answered < 11);
+    submitBtn.disabled = (answered < 11) || !isJsonValid();
   }
 
   form.addEventListener('change', updateProgress);
@@ -410,10 +538,19 @@
       q11: form.q11.value
     };
 
+    let chatgptData;
+    try {
+      chatgptData = JSON.parse(jsonPasteEl.value.trim());
+    } catch (e) {
+      alert('JSONの形式が正しくありません。もう一度確認してください。');
+      return;
+    }
+
     const payload = {
       uid: uid,
       submitted_at: new Date().toISOString(),
-      answers: answers
+      answers: answers,
+      chatgpt_json: chatgptData
     };
 
     submitBtn.disabled = true;

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -72,6 +73,22 @@
     background: var(--accent);
     width: 0%;
     transition: width 0.2s ease;
+  }
+  .event-header {
+    max-width: 640px;
+    margin: 28px auto 10px;
+    padding: 0 4px;
+  }
+  .event-header .event-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .event-header .event-title {
+    font-family: "Noto Serif JP", serif;
+    font-size: 16px;
+    margin-top: 4px;
   }
   .q {
     background: var(--panel);
@@ -227,7 +244,7 @@
 <header>
   <div class="eyebrow">TEST VERSION</div>
   <h1>あなたの判断パターン診断</h1>
-  <p>11の質問に答えてください。フリー入力はありません。</p>
+  <p>3つの出来事について、11の質問に答えてください。フリー入力はありません。</p>
 </header>
 
 <main>
@@ -239,122 +256,141 @@
 
   <form id="diagForm">
 
+    <div class="event-header">
+      <div class="event-eyebrow">出来事①</div>
+      <div class="event-title">一番モヤモヤした仕事の出来事を思い出してください</div>
+    </div>
+
     <!-- Q1 -->
     <div class="q" data-qid="q1">
       <div class="q-label">Q1</div>
-      <div class="q-text">時間を忘れて没頭してしまうのは、次のどの場面に近いですか？</div>
-      <label class="choice"><input type="radio" name="q1" value="A">A. 何かを作ったり、形にしている時</label>
-      <label class="choice"><input type="radio" name="q1" value="B">B. 人と話したり、一緒に考えている時</label>
-      <label class="choice"><input type="radio" name="q1" value="C">C. 問題を分析したり、仕組みを理解している時</label>
-      <label class="choice"><input type="radio" name="q1" value="D">D. 目標に向かって段階的に進んでいる時</label>
+      <div class="q-text">その時、一番の原因だと思ったのは？</div>
+      <label class="choice"><input type="radio" name="q1" value="A">A. 人間関係</label>
+      <label class="choice"><input type="radio" name="q1" value="B">B. ルール・手順</label>
+      <label class="choice"><input type="radio" name="q1" value="C">C. 環境やタイミング（運・状況）</label>
+      <label class="choice"><input type="radio" name="q1" value="D">D. 自分の実力不足</label>
     </div>
 
     <!-- Q2 -->
     <div class="q" data-qid="q2">
       <div class="q-label">Q2</div>
-      <div class="q-text">できれば避けたい仕事の頼まれ方は、次のどれに近いですか？</div>
-      <label class="choice"><input type="radio" name="q2" value="A">A. 細かいルールや手順を厳密に守るよう求められる</label>
-      <label class="choice"><input type="radio" name="q2" value="B">B. 大勢の前で意見を言うよう求められる</label>
-      <label class="choice"><input type="radio" name="q2" value="C">C. 前例のないことを自分の判断だけで進めるよう求められる</label>
-      <label class="choice"><input type="radio" name="q2" value="D">D. 人の感情的な対立の間に立つよう求められる</label>
+      <div class="q-text">振り返って、実は一番つらかったのは？</div>
+      <label class="choice"><input type="radio" name="q2" value="A">A. 目的や意図が共有されないまま動くこと</label>
+      <label class="choice"><input type="radio" name="q2" value="B">B. 自分で判断する余地がないこと</label>
+      <label class="choice"><input type="radio" name="q2" value="C">C. 成果が誰にも届いている実感がないこと</label>
+      <label class="choice"><input type="radio" name="q2" value="D">D. 一人で抱え込む状況</label>
     </div>
 
-    <!-- Q3: ranking -->
+    <!-- Q3 -->
     <div class="q" data-qid="q3">
       <div class="q-label">Q3</div>
-      <div class="q-text">次の状況のうち、「一番居心地が悪い」と感じる順に、1〜4の番号をつけてください。</div>
-      <div class="rank-hint">1＝最も居心地が悪い　→　4＝まだ我慢できる</div>
-      <div class="rank-row">
-        <select name="q3_r1"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
-        毎日同じ作業の繰り返しを求められる
-      </div>
-      <div class="rank-row">
-        <select name="q3_r2"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
-        成果が出るまで誰にも評価されない
-      </div>
-      <div class="rank-row">
-        <select name="q3_r3"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
-        自分のやり方を否定されて別の方法を強制される
-      </div>
-      <div class="rank-row">
-        <select name="q3_r4"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
-        チームの中で孤立して一人で進める
-      </div>
-      <div class="error-msg" id="q3-error">1〜4を、それぞれ1回ずつ使ってください。</div>
+      <div class="q-text">その時、実際に最初に取った行動は？</div>
+      <label class="choice"><input type="radio" name="q3" value="A">A. 原因を自分で分析した</label>
+      <label class="choice"><input type="radio" name="q3" value="B">B. 誰かに相談した</label>
+      <label class="choice"><input type="radio" name="q3" value="C">C. やり方を変えてみた</label>
+      <label class="choice"><input type="radio" name="q3" value="D">D. 距離を置いて考えた</label>
+    </div>
+
+    <div class="event-header">
+      <div class="event-eyebrow">出来事②</div>
+      <div class="event-title">頑張ってやってよかった出来事を思い出してください</div>
     </div>
 
     <!-- Q4 -->
     <div class="q" data-qid="q4">
       <div class="q-label">Q4</div>
-      <div class="q-text">頑張れた瞬間を振り返ると、次のどれが一番近いですか？</div>
-      <label class="choice"><input type="radio" name="q4" value="A">A. 誰もやっていないやり方を見つけられた時</label>
-      <label class="choice"><input type="radio" name="q4" value="B">B. 困っている人の役に立てたと分かった時</label>
-      <label class="choice"><input type="radio" name="q4" value="C">C. 自分の中で完璧に近づけたと感じた時</label>
-      <label class="choice"><input type="radio" name="q4" value="D">D. 決めた期限や目標に間に合わせられた時</label>
+      <div class="q-text">一番の理由だと思っているのは？</div>
+      <label class="choice"><input type="radio" name="q4" value="A">A. 誰もやっていないことに挑戦できたから</label>
+      <label class="choice"><input type="radio" name="q4" value="B">B. 誰かの役に立てたから</label>
+      <label class="choice"><input type="radio" name="q4" value="C">C. 自分の中で納得できる形にできたから</label>
+      <label class="choice"><input type="radio" name="q4" value="D">D. 期限や目標に間に合わせられたから</label>
     </div>
 
     <!-- Q5 -->
     <div class="q" data-qid="q5">
       <div class="q-label">Q5</div>
-      <div class="q-text">初めての大きな判断を任された時、実際に動き出せたきっかけに一番近いのはどれですか？</div>
-      <label class="choice"><input type="radio" name="q5" value="A">A. 目的や背景が十分に理解できた時</label>
-      <label class="choice"><input type="radio" name="q5" value="B">B. 信頼できる人からの後押しがあった時</label>
-      <label class="choice"><input type="radio" name="q5" value="C">C. 期限が迫って選択肢がなくなった時</label>
-      <label class="choice"><input type="radio" name="q5" value="D">D. 自分の中で腹落ちする理由が見つかった時</label>
+      <div class="q-text">振り返ると、実はうまくいった一番の理由は？</div>
+      <label class="choice"><input type="radio" name="q5" value="A">A. 目的や背景を理解できていたこと</label>
+      <label class="choice"><input type="radio" name="q5" value="B">B. 信頼できる人がそばにいたこと</label>
+      <label class="choice"><input type="radio" name="q5" value="C">C. 自分のやり方に任せてもらえたこと</label>
+      <label class="choice"><input type="radio" name="q5" value="D">D. 終わりが見えていたこと</label>
     </div>
 
     <!-- Q6 -->
     <div class="q" data-qid="q6">
       <div class="q-label">Q6</div>
-      <div class="q-text">上司から仕事を頼まれるとして、次のどちらの方が自然に力を発揮できますか？</div>
-      <label class="choice"><input type="radio" name="q6" value="A">A. 「目的は説明するので、やり方はあなたに任せます」</label>
-      <label class="choice"><input type="radio" name="q6" value="B">B. 「理由は説明しません。この手順通りにやってください」</label>
+      <div class="q-text">その時、実際にどう動いていた？</div>
+      <label class="choice"><input type="radio" name="q6" value="A">A. 新しいやり方を考えていた</label>
+      <label class="choice"><input type="radio" name="q6" value="B">B. 周りと確認しながら進めていた</label>
+      <label class="choice"><input type="radio" name="q6" value="C">C. 自分の中で仕上げにこだわっていた</label>
+      <label class="choice"><input type="radio" name="q6" value="D">D. 段取りを組んで進めていた</label>
+    </div>
+
+    <div class="event-header">
+      <div class="event-eyebrow">出来事③</div>
+      <div class="event-title">計画が崩れた／予定通りいかなかった出来事を思い出してください</div>
     </div>
 
     <!-- Q7 -->
     <div class="q" data-qid="q7">
       <div class="q-label">Q7</div>
-      <div class="q-text">何かを達成した直後、実際にやりがちな行動はどれですか？</div>
-      <label class="choice"><input type="radio" name="q7" value="A">A. すぐ次の目標を探し始める</label>
-      <label class="choice"><input type="radio" name="q7" value="B">B. 誰かに報告したり共有したくなる</label>
-      <label class="choice"><input type="radio" name="q7" value="C">C. うまくいった理由を振り返って整理する</label>
-      <label class="choice"><input type="radio" name="q7" value="D">D. しばらくその余韻に浸る</label>
+      <div class="q-text">その時、一番の原因だと思ったのは？</div>
+      <label class="choice"><input type="radio" name="q7" value="A">A. 事前の準備不足</label>
+      <label class="choice"><input type="radio" name="q7" value="B">B. 周りとの連携不足</label>
+      <label class="choice"><input type="radio" name="q7" value="C">C. 状況の急な変化</label>
+      <label class="choice"><input type="radio" name="q7" value="D">D. そもそも無理のある計画だった</label>
     </div>
 
     <!-- Q8 -->
     <div class="q" data-qid="q8">
       <div class="q-label">Q8</div>
-      <div class="q-text">計画通りにいかなかった時、最初にすることが多いのはどれですか？</div>
-      <label class="choice"><input type="radio" name="q8" value="A">A. 何が足りなかったか原因を洗い出す</label>
-      <label class="choice"><input type="radio" name="q8" value="B">B. 周りに相談する</label>
-      <label class="choice"><input type="radio" name="q8" value="C">C. とにかくやり方を変えてみる</label>
-      <label class="choice"><input type="radio" name="q8" value="D">D. 一旦距離を置いて考える</label>
+      <div class="q-text">振り返って、実は一番ストレスだったのは？</div>
+      <label class="choice"><input type="radio" name="q8" value="A">A. 目的や意図が分からないまま対応を迫られたこと</label>
+      <label class="choice"><input type="radio" name="q8" value="B">B. 自分の判断で動けなかったこと</label>
+      <label class="choice"><input type="radio" name="q8" value="C">C. 誰にも相談できなかったこと</label>
+      <label class="choice"><input type="radio" name="q8" value="D">D. 頑張りが誰にも伝わらなかったこと</label>
     </div>
 
     <!-- Q9 -->
     <div class="q" data-qid="q9">
       <div class="q-label">Q9</div>
-      <div class="q-text">これまでの仕事で、「本当はこうしたい」と思いながら、条件や安定を優先して選んだことがある。</div>
-      <label class="choice"><input type="radio" name="q9" value="はい">はい</label>
-      <label class="choice"><input type="radio" name="q9" value="いいえ">いいえ</label>
+      <div class="q-text">その時、実際に最初に取った行動は？</div>
+      <label class="choice"><input type="radio" name="q9" value="A">A. 原因を洗い出した</label>
+      <label class="choice"><input type="radio" name="q9" value="B">B. 周りに相談した</label>
+      <label class="choice"><input type="radio" name="q9" value="C">C. やり方を変えた</label>
+      <label class="choice"><input type="radio" name="q9" value="D">D. 距離を置いて考えた</label>
     </div>
 
-    <!-- Q10 -->
+    <!-- Q10: ranking -->
     <div class="q" data-qid="q10">
       <div class="q-label">Q10</div>
-      <div class="q-text">これまでで一番「よし、やるぞ」と思えたのはどんな時ですか？</div>
-      <label class="choice"><input type="radio" name="q10" value="A">A. 誰も手をつけていない課題を見つけた時</label>
-      <label class="choice"><input type="radio" name="q10" value="B">B. 「あなたにお願いしたい」と名指しで頼まれた時</label>
-      <label class="choice"><input type="radio" name="q10" value="C">C. 終わりが見えて、あと少しで完成すると分かった時</label>
-      <label class="choice"><input type="radio" name="q10" value="D">D. 自分のやり方が誰かの役に立つと分かった時</label>
+      <div class="q-text">次の状況のうち、「一番居心地が悪い」と感じる順に、1〜4の番号をつけてください。</div>
+      <div class="rank-hint">1＝最も居心地が悪い　→　4＝まだ我慢できる</div>
+      <div class="rank-row">
+        <select name="q10_r1"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+        毎日同じ作業の繰り返しを求められる
+      </div>
+      <div class="rank-row">
+        <select name="q10_r2"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+        成果が出るまで誰にも評価されない
+      </div>
+      <div class="rank-row">
+        <select name="q10_r3"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+        自分のやり方を否定されて別の方法を強制される
+      </div>
+      <div class="rank-row">
+        <select name="q10_r4"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+        チームの中で孤立して一人で進める
+      </div>
+      <div class="error-msg" id="q10-error">1〜4を、それぞれ1回ずつ使ってください。</div>
     </div>
 
     <!-- Q11 -->
     <div class="q" data-qid="q11">
       <div class="q-label">Q11</div>
-      <div class="q-text">次の仕事なら、どちらの方が頑張れますか？</div>
-      <label class="choice"><input type="radio" name="q11" value="A">A. 初めてやる仕事だけど、「なぜこの仕事が必要なのか」を理解している</label>
-      <label class="choice"><input type="radio" name="q11" value="B">B. 何度も経験している仕事だけど、言われた通りにやるだけ</label>
+      <div class="q-text">これまでの仕事で、「本当はこうしたい」と思いながら、条件や安定を優先して選んだことがある。</div>
+      <label class="choice"><input type="radio" name="q11" value="はい">はい</label>
+      <label class="choice"><input type="radio" name="q11" value="いいえ">いいえ</label>
     </div>
 
     <!-- ChatGPT連携ステップ -->
@@ -488,24 +524,24 @@
     return params.get(name) || '';
   }
 
-  function isQ3Valid() {
-    const vals = ['q3_r1','q3_r2','q3_r3','q3_r4'].map(n => form[n].value);
+  function isQ10Valid() {
+    const vals = ['q10_r1','q10_r2','q10_r3','q10_r4'].map(n => form[n].value);
     if (vals.some(v => v === '')) return false;
     const set = new Set(vals);
     return set.size === 4; // 1〜4が重複なく使われているか
   }
 
   function updateProgress() {
-    const singleQs = ['q1','q2','q4','q5','q6','q7','q8','q9','q10','q11'];
+    const singleQs = ['q1','q2','q3','q4','q5','q6','q7','q8','q9','q11'];
     let answered = 0;
     singleQs.forEach(q => { if (form[q] && form[q].value) answered++; });
-    if (isQ3Valid()) answered++;
+    if (isQ10Valid()) answered++;
 
     answeredCountEl.textContent = answered;
     progressFill.style.width = (answered / 11 * 100) + '%';
 
-    document.getElementById('q3-error').style.display =
-      (['q3_r1','q3_r2','q3_r3','q3_r4'].some(n => form[n].value !== '') && !isQ3Valid())
+    document.getElementById('q10-error').style.display =
+      (['q10_r1','q10_r2','q10_r3','q10_r4'].some(n => form[n].value !== '') && !isQ10Valid())
         ? 'block' : 'none';
 
     submitBtn.disabled = (answered < 11) || !isJsonValid();
@@ -522,19 +558,19 @@
     const answers = {
       q1: form.q1.value,
       q2: form.q2.value,
-      q3_rank: {
-        "毎日同じ作業の繰り返しを求められる": form.q3_r1.value,
-        "成果が出るまで誰にも評価されない": form.q3_r2.value,
-        "自分のやり方を否定されて別の方法を強制される": form.q3_r3.value,
-        "チームの中で孤立して一人で進める": form.q3_r4.value
-      },
+      q3: form.q3.value,
       q4: form.q4.value,
       q5: form.q5.value,
       q6: form.q6.value,
       q7: form.q7.value,
       q8: form.q8.value,
       q9: form.q9.value,
-      q10: form.q10.value,
+      q10_rank: {
+        "毎日同じ作業の繰り返しを求められる": form.q10_r1.value,
+        "成果が出るまで誰にも評価されない": form.q10_r2.value,
+        "自分のやり方を否定されて別の方法を強制される": form.q10_r3.value,
+        "チームの中で孤立して一人で進める": form.q10_r4.value
+      },
       q11: form.q11.value
     };
 

@@ -398,12 +398,9 @@
       <div class="q-label">STEP 2</div>
       <div class="q-text">診断では、「あなたが思っている自分」と「普段の会話から見える行動パターン」を比較します。そのため、まず行動パターンのデータを作成します。以下をコピーして、ご自身のChatGPTに貼り付けてください。</div>
 
-      <textarea id="gptTemplate" readonly class="gpt-template">これまでの私との会話履歴を振り返り、次の8項目について、
+      <textarea id="gptTemplate" readonly class="gpt-template">これまでの私との会話履歴を振り返り、次の11項目について、
 会話の中に表れている傾向を書き出してください。
-
-分析・評価・診断は行わないでください。理由や解説も書かないでください。
-出力は下記のJSON形式のみとし、前置きや後書きの文章は一切つけないでください。
-
+...
 {
   "energy_pattern": "",
   "avoidance_pattern": "",
@@ -412,7 +409,10 @@
   "decision_style": "",
   "authority_pattern": "",
   "achievement_language": "",
-  "obstacle_language": ""
+  "obstacle_language": "",
+  "interpersonal_style": "",
+  "locus_of_control": "",
+  "conflict_response": ""
 }
 
 各項目の意味：
@@ -424,6 +424,9 @@
 - authority_pattern：ルールや他者評価への向き合い方
 - achievement_language：何を達成・成功として語っているか
 - obstacle_language：障害や失敗をどう語っているか
+- interpersonal_style：同僚や友人など対等な関係の相手とどう関わっているか
+- locus_of_control：うまくいかない時、原因を自分に求めているか、周囲や状況に求めているか
+- conflict_response：意見の対立が起きた時、避けるか、主張するか、調整しようとするか
 
 情報が少ない項目は、無理に埋めず空欄のままにしてください。</textarea>
 

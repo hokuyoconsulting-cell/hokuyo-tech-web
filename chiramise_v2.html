@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>あなたの武器診断 — 分析結果</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+  :root {
+    --bg: #f7f8fc;
+    --bg2: #ffffff;
+    --border: #d8dce8;
+    --border2: #c2c8dc;
+    --text: #1a1f36;
+    --text2: #5a6180;
+    --text3: #9199b8;
+    --accent: #1c3a7a;
+    --accent2: #2d52a8;
+    --accent-light: #e8edf8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Noto Sans JP', sans-serif; font-size: 15px; line-height: 1.8; min-height: 100vh; }
+  .header { background: var(--accent); padding: 18px 24px; display: flex; align-items: center; gap: 12px; }
+  .header-logo { font-family: 'Noto Serif JP', serif; font-size: 13px; color: #fff; letter-spacing: 0.1em; }
+  .header-divider { width: 1px; height: 16px; background: rgba(255,255,255,0.3); }
+  .header-title { font-size: 13px; color: rgba(255,255,255,0.7); }
+  .container { max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
+  .intro { margin-bottom: 40px; }
+  .intro-label { font-size: 11px; letter-spacing: 0.15em; color: var(--accent2); margin-bottom: 12px; }
+  .intro-heading { font-family: 'Noto Serif JP', serif; font-size: 22px; font-weight: 600; line-height: 1.6; color: var(--text); margin-bottom: 16px; }
+  .intro-body { font-size: 14px; color: var(--text2); line-height: 1.9; }
+  .items-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+  .section-gap { height: 8px; }
+  .item { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 24px; position: relative; overflow: hidden; }
+  .item.open { border-left: 3px solid var(--accent2); }
+  .item-number { font-size: 11px; color: var(--text3); letter-spacing: 0.1em; margin-bottom: 10px; }
+  .item-headline { font-family: 'Noto Serif JP', serif; font-size: 17px; font-weight: 600; color: var(--text); line-height: 1.6; margin-bottom: 12px; }
+  .item-body { font-size: 14px; color: var(--text2); line-height: 1.9; }
+  .item.locked .item-headline, .item.locked .item-body { filter: blur(3px); pointer-events: none; user-select: none; }
+  .lock-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: rgba(247,248,252,0.6); }
+  .lock-icon { width: 24px; height: 24px; opacity: 0.4; }
+  .lock-text { font-size: 12px; color: var(--text3); letter-spacing: 0.05em; }
+  .cta-inline { text-align: center; padding: 8px 0 24px; }
+  .btn-inline { display: inline-block; background: var(--accent); color: #fff; border-radius: 6px; padding: 12px 28px; font-size: 14px; font-weight: 700; text-decoration: none; }
+  .btn-inline:hover { background: var(--accent2); }
+  .sticky-cta { position: fixed; bottom: -80px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; border-radius: 8px; padding: 14px 32px; font-size: 14px; font-weight: 700; text-decoration: none; white-space: nowrap; transition: bottom 0.3s ease; z-index: 999; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+  .sticky-cta.visible { bottom: 24px; }
+  .cta-section { background: var(--accent); border-radius: 12px; padding: 40px 32px; text-align: center; color: #fff; }
+  .cta-label { font-size: 11px; letter-spacing: 0.15em; color: rgba(255,255,255,0.6); margin-bottom: 16px; }
+  .cta-heading { font-family: 'Noto Serif JP', serif; font-size: 20px; font-weight: 600; line-height: 1.7; margin-bottom: 20px; }
+  .unlock-list { list-style: none; text-align: left; max-width: 340px; margin: 0 auto 28px; display: flex; flex-direction: column; gap: 10px; }
+  .unlock-list li { font-size: 13px; color: rgba(255,255,255,0.85); display: flex; align-items: flex-start; gap: 8px; line-height: 1.6; }
+  .unlock-list li svg { flex-shrink: 0; margin-top: 2px; }
+  .cta-price { display: flex; align-items: baseline; justify-content: center; gap: 6px; margin-bottom: 6px; }
+  .cta-price-amount { font-size: 32px; font-weight: 700; }
+  .cta-price-unit { font-size: 14px; color: rgba(255,255,255,0.7); }
+  .cta-price-note { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 24px; }
+  .btn-primary { display: block; width: 100%; max-width: 360px; margin: 0 auto 12px; background: #fff; color: var(--accent); border: none; border-radius: 6px; padding: 16px 24px; font-size: 15px; font-weight: 700; font-family: 'Noto Sans JP', sans-serif; cursor: pointer; transition: background 0.15s, transform 0.1s; text-decoration: none; text-align: center; }
+  .btn-primary:hover { background: #f0f3fc; }
+  .btn-primary:active { transform: scale(0.98); }
+  .btn-secondary { display: block; width: 100%; max-width: 360px; margin: 0 auto; background: transparent; color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; padding: 13px 24px; font-size: 14px; font-family: 'Noto Sans JP', sans-serif; cursor: pointer; transition: border-color 0.15s, color 0.15s; text-decoration: none; text-align: center; }
+  .btn-secondary:hover { border-color: rgba(255,255,255,0.6); color: #fff; }
+  .disclaimer { font-size: 11px; color: rgba(255,255,255,0.4); text-align: center; margin-top: 16px; line-height: 1.8; }
+  .disclaimer a { color: rgba(255,255,255,0.5); text-decoration: underline; text-underline-offset: 3px; }
+  @media (max-width: 480px) { .container { padding: 32px 16px 60px; } .item { padding: 18px 14px; } .cta-section { padding: 28px 20px; } }
+</style>
+</head>
+<body>
+<div class="header">
+  <span class="header-logo">Hokuyo Tech</span>
+  <div class="header-divider"></div>
+  <span class="header-title">あなたの武器診断 — 分析結果</span>
+</div>
+<div class="container">
+  <div class="intro">
+    <div class="intro-label">ANALYSIS RESULT</div>
+    <h1 class="intro-heading">あなたの経験を、<br>面接官の視点で読み解きました。</h1>
+    <p class="intro-body">あなたが当たり前だと思っている経験の中に、<br>「ぜひ会ってみたい」と感じる理由が隠れています。<br><br>まずは①②をご覧ください。<br>続きには、面接で確認すべきこと・採用側に伝わる言葉が続いています。</p>
+  </div>
+  <div class="items-list" id="items-list"></div>
+  <div class="cta-section">
+    <div class="cta-label">自己分析レポート</div>
+    <h2 class="cta-heading">残りの項目を解除する</h2>
+    <ul class="unlock-list" id="unlock-list"></ul>
+    <div class="cta-price"><span class="cta-price-amount">¥3,300</span><span class="cta-price-unit">（税込）</span></div>
+    <p class="cta-price-note">デジタルコンテンツの性質上、決済完了後の返金は原則不可です</p>
+    <a href="https://buy.stripe.com/test_8x25kD7PMfpJ3oP4G224000" class="btn-primary">残りの項目を解除して読む（¥3,300）</a>
+    <p class="disclaimer">決済にはStripeを使用しています。<br><a href="https://hokuyoconsulting-cell.github.io/hokuyo-tech-web/tokushoho.html">特定商取引法に基づく表記</a>　/　<a href="https://hokuyoconsulting-cell.github.io/hokuyo-tech-web/privacy.html">プライバシーポリシー</a>　/　<a href="https://hokuyoconsulting-cell.github.io/hokuyo-tech-web/terms.html">利用規約</a></p>
+  </div>
+</div>
+
+<a href="https://buy.stripe.com/test_8x25kD7PMfpJ3oP4G224000" class="sticky-cta" id="sticky-cta">残りの項目を解除して読む（¥3,300税込）</a>
+<script>
+  const uid = new URLSearchParams(window.location.search).get('uid') || '';
+  const baseUrl = 'https://buy.stripe.com/test_8x25kD7PMfpJ3oP4G224000';
+  const payUrl = uid ? baseUrl + '?client_reference_id=' + uid : baseUrl;
+
+  document.querySelectorAll('a[href="' + baseUrl + '"]').forEach(function(el) { el.href = payUrl; });
+
+  const LOCK_SVG = '<svg class="lock-icon" viewBox="0 0 24 24" fill="none" stroke="#9199b8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+  const CHECK_SVG = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+  function openCard(number, label, headline, body) {
+    return '<div class="item open">' +
+      '<div class="item-number">' + number + ' ' + label + '</div>' +
+      '<div class="item-headline">' + headline + '</div>' +
+      '<div class="item-body">' + body + '</div>' +
+    '</div>';
+  }
+
+  function lockedCard(number, label, headline, body) {
+    return '<div class="item locked">' +
+      '<div class="item-number">' + number + ' ' + label + '</div>' +
+      '<div class="item-headline">' + headline + '</div>' +
+      '<div class="item-body">' + body + '</div>' +
+      '<div class="lock-overlay" aria-hidden="true">' + LOCK_SVG + '<span class="lock-text">自己分析レポートで解除</span></div>' +
+    '</div>';
+  }
+
+  function renderData(data) {
+    const itemsList = document.getElementById('items-list');
+    const unlockList = document.getElementById('unlock-list');
+    let html = '';
+
+    // ① impression（無料）
+    if (data.impression) {
+      html += openCard('①', '面接官の視点', data.impression.headline, data.impression.body);
+    }
+
+    // ② top_discovery（無料）
+    if (data.top_discovery) {
+      html += openCard('②', '最も強い発見', data.top_discovery.headline, data.top_discovery.body);
+    } else {
+      html += openCard('②', '最も強い発見', '今回の回答から', '今回の回答からは、意外な一面として大きく見直すポイントは確認できませんでした。');
+    }
+
+    html += '<div class="cta-inline"><a href="' + payUrl + '" class="btn-inline">残りの項目を解除して読む（¥3,300税込）</a></div>';
+
+    // ⑤ environment_criteria（有料・ロック）
+    if (data.environment_criteria) {
+      html += lockedCard('⑤', '面接で確認すべきこと', data.environment_criteria.headline, data.environment_criteria.body);
+    }
+    // ⑥ communication（有料・ロック）
+    if (data.communication) {
+      html += lockedCard('⑥', '採用側に伝わる言葉', data.communication.headline, data.communication.body);
+    }
+    // 追加の発見（有料・ロック・可変数）
+    const extra = Array.isArray(data.additional_discoveries) ? data.additional_discoveries : [];
+    extra.forEach(function(d) {
+      html += lockedCard('＋', '追加の発見', d.headline, d.body);
+    });
+
+    itemsList.innerHTML = html;
+
+    // 解除リストは実データに応じて動的に組み立てる
+    let unlockHtml = '';
+    unlockHtml += '<li>' + CHECK_SVG + '<span>⑤ 面接で確認すべきこと</span></li>';
+    unlockHtml += '<li>' + CHECK_SVG + '<span>⑥ 採用側に伝わる言葉</span></li>';
+    if (extra.length > 0) {
+      unlockHtml += '<li>' + CHECK_SVG + '<span>追加の発見（' + extra.length + '件）</span></li>';
+    }
+    unlockList.innerHTML = unlockHtml;
+
+    initScroll();
+  }
+
+  if (uid) {
+    const apiUrl = 'https://api.github.com/repos/hokuyoconsulting-cell/hokuyo-tech-web/contents/results/' + uid + '.json';
+    fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github+json' } })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (!data.content) {
+          document.getElementById('items-list').innerHTML = '<p style="color:red">データが見つかりませんでした。</p>';
+          return;
+        }
+        const base64 = data.content.replace(/\n/g, '');
+        const binary = atob(base64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) { bytes[i] = binary.charCodeAt(i); }
+        const decoded = new TextDecoder('utf-8').decode(bytes);
+        let parsed;
+        try { parsed = JSON.parse(decoded); } catch (e) {
+          document.getElementById('items-list').innerHTML = '<p style="color:red">データの形式が正しくありません。</p>';
+          return;
+        }
+        renderData(parsed);
+      })
+      .catch(function() {
+        document.getElementById('items-list').innerHTML = '<p style="color:red">データの取得に失敗しました。</p>';
+      });
+  }
+
+  function initScroll() {
+    const stickyCta = document.getElementById('sticky-cta');
+    const lockedStart = document.querySelectorAll('.item.locked')[0];
+    const lockedEnd = document.querySelector('.cta-section');
+    function onScroll() {
+      if (!lockedStart || !lockedEnd) return;
+      const startY = lockedStart.getBoundingClientRect().top;
+      const endY = lockedEnd.getBoundingClientRect().top;
+      if (startY < window.innerHeight && endY > 0) {
+        stickyCta.classList.add('visible');
+      } else {
+        stickyCta.classList.remove('visible');
+      }
+    }
+    window.addEventListener('scroll', onScroll);
+  }
+
+  if (!uid) { initScroll(); }
+</script>
+</body>
+</html>

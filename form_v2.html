@@ -489,6 +489,7 @@
     } catch (err) {
       // クリップボードAPIが使えない環境向けのフォールバック
       gptTemplate.removeAttribute('readonly');
+      gptTemplate.focus();
       gptTemplate.select();
       document.execCommand('copy');
       gptTemplate.setAttribute('readonly', 'true');

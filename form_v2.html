@@ -148,6 +148,18 @@
     color: var(--ink-soft);
     margin-bottom: 10px;
   }
+  .text-input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-family: inherit;
+  }
+  .text-input:focus {
+    border-color: var(--accent);
+    outline: none;
+  }
   .submit-area {
     text-align: center;
     margin-top: 28px;
@@ -255,6 +267,18 @@
   </div>
 
   <form id="diagForm">
+
+    <div class="q" data-qid="profile">
+      <div class="q-label">基本情報</div>
+      <div class="q-text">お名前（本名でなくて構いません。診断結果の管理に使用します）</div>
+      <input type="text" id="userName" class="text-input" placeholder="例：たなか、ゲスト123 など" required>
+    </div>
+
+    <div class="q" data-qid="email">
+      <div class="q-label">連絡先</div>
+      <div class="q-text">メールアドレス</div>
+      <input type="email" id="userEmail" class="text-input" placeholder="example@example.com" required>
+    </div>
 
     <div class="event-header">
       <div class="event-eyebrow">出来事①</div>
@@ -475,9 +499,12 @@
     });
   });
 
-  document.querySelectorAll('.rank-row selecth').forEach(sel => {
+document.querySelectorAll('.rank-row select').forEach(sel => {
     sel.addEventListener('change', updateProgress);
   });
+
+  document.getElementById('userName').addEventListener('input', updateProgress);
+  document.getElementById('userEmail').addEventListener('input', updateProgress);
 
   // コピー機能
   const gptTemplate = document.getElementById('gptTemplate');
@@ -535,6 +562,13 @@
     return set.size === 4; // 1〜4が重複なく使われているか
   }
 
+  function isProfileValid() {
+    const name = document.getElementById('userName').value.trim();
+    const email = document.getElementById('userEmail').value.trim();
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    return name !== '' && emailOk;
+  }
+
   function updateProgress() {
     const singleQs = ['q1','q2','q3','q4','q5','q6','q7','q8','q9','q11'];
     let answered = 0;
@@ -548,7 +582,7 @@
       (['q10_r1','q10_r2','q10_r3','q10_r4'].some(n => form[n].value !== '') && !isQ10Valid())
         ? 'block' : 'none';
 
-    submitBtn.disabled = (answered < 11) || !isJsonValid();
+    submitBtn.disabled = (answered < 11) || !isJsonValid() || !isProfileValid();
   }
 
   form.addEventListener('change', updateProgress);
@@ -588,6 +622,8 @@
 
     const payload = {
       uid: uid,
+      user_name: document.getElementById('userName').value.trim(),
+      user_email: document.getElementById('userEmail').value.trim(),
       submitted_at: new Date().toISOString(),
       answers: answers,
       chatgpt_json: chatgptData

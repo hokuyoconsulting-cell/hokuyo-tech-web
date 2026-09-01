@@ -85,15 +85,15 @@
     <ul class="unlock-list" id="unlock-list"></ul>
     <div class="cta-price"><span class="cta-price-amount">¥3,300</span><span class="cta-price-unit">（税込）</span></div>
     <p class="cta-price-note">デジタルコンテンツの性質上、決済完了後の返金は原則不可です</p>
-    <a href="https://buy.stripe.com/test_8x25kD7PMfpJ3oP4G224000" class="btn-primary">残りの項目を解除して読む（¥3,300）</a>
+    <a href="https://buy.stripe.com/fZu9AM4t36k53rrcJrd3i00" class="btn-primary">残りの項目を解除して読む（¥3,300）</a>
     <p class="disclaimer">決済にはStripeを使用しています。<br><a href="https://hokuyoconsulting-cell.github.io/hokuyo-tech-web/tokushoho.html">特定商取引法に基づく表記</a>　/　<a href="https://hokuyoconsulting-cell.github.io/hokuyo-tech-web/privacy.html">プライバシーポリシー</a>　/　<a href="https://hokuyoconsulting-cell.github.io/hokuyo-tech-web/terms.html">利用規約</a></p>
   </div>
 </div>
 
-<a href="https://buy.stripe.com/test_8x25kD7PMfpJ3oP4G224000" class="sticky-cta" id="sticky-cta">残りの項目を解除して読む（¥3,300税込）</a>
+<a href="https://buy.stripe.com/fZu9AM4t36k53rrcJrd3i00" class="sticky-cta" id="sticky-cta">残りの項目を解除して読む（¥3,300税込）</a>
 <script>
   const uid = new URLSearchParams(window.location.search).get('uid') || '';
-  const baseUrl = 'https://buy.stripe.com/test_8x25kD7PMfpJ3oP4G224000';
+  const baseUrl = 'https://buy.stripe.com/fZu9AM4t36k53rrcJrd3i00';
   const payUrl = uid ? baseUrl + '?client_reference_id=' + uid : baseUrl;
 
   document.querySelectorAll('a[href="' + baseUrl + '"]').forEach(function(el) { el.href = payUrl; });

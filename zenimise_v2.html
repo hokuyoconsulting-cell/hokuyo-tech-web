@@ -80,7 +80,7 @@
   <div class="intro">
     <div class="intro-label">FULL REPORT</div>
     <h1 class="intro-heading">面接官の目線から見た、<br>あなたの武器の全診断結果です。</h1>
-    <p class="intro-body">あなたが何気なく書いた経験を、面接官はどのように見ているのか。<br><br>①〜⑥を、ぜひ最後までご覧ください。</p>
+    <p class="intro-body">あなたが何気なく書いた経験を、面接官はどのように見ているのか。<br><br>①〜を、ぜひ最後までご覧ください。</p>
   </div>
 
   <div class="items-list" id="items-list"></div>
@@ -161,11 +161,11 @@
     }
 
     if (environmentCriteria) {
-      html += card('⑤', '面接で確認すべきこと', environmentCriteria.headline, environmentCriteria.body, false);
+      html += card('③', '面接で確認すべきこと', environmentCriteria.headline, environmentCriteria.body, false);
     }
 
     if (communication) {
-      html += card('⑥', '採用側に伝わる言葉', communication.headline, communication.body, false);
+      html += card('④', '採用側に伝わる言葉', communication.headline, communication.body, false);
     }
 
     const extra = (Array.isArray(raw.additional_discoveries) ? raw.additional_discoveries : []).map(safeParse).filter(Boolean);

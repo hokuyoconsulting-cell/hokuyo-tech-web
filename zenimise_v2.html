@@ -135,28 +135,40 @@
     '</div>';
   }
 
-  function renderData(data) {
+  function safeParse(v) {
+    if (typeof v === 'string') {
+      try { return JSON.parse(v); } catch (e) { return null; }
+    }
+    return v;
+  }
+
+  function renderData(raw) {
     let html = '';
 
-    if (data.impression) {
-      html += card('①', '面接官の視点', data.impression.headline, data.impression.body, false);
+    const impression = safeParse(raw.impression);
+    const topDiscovery = safeParse(raw.top_discovery);
+    const environmentCriteria = safeParse(raw.environment_criteria);
+    const communication = safeParse(raw.communication);
+
+    if (impression) {
+      html += card('①', '面接官の視点', impression.headline, impression.body, false);
     }
 
-    if (data.top_discovery) {
-      html += card('②', '最も強い発見', data.top_discovery.headline, data.top_discovery.body, false);
+    if (topDiscovery) {
+      html += card('②', '最も強い発見', topDiscovery.headline, topDiscovery.body, false);
     } else {
       html += card('②', '最も強い発見', '今回の回答から', '今回の回答からは、意外な一面として大きく見直すポイントは確認できませんでした。', true);
     }
 
-    if (data.environment_criteria) {
-      html += card('⑤', '面接で確認すべきこと', data.environment_criteria.headline, data.environment_criteria.body, false);
+    if (environmentCriteria) {
+      html += card('⑤', '面接で確認すべきこと', environmentCriteria.headline, environmentCriteria.body, false);
     }
 
-    if (data.communication) {
-      html += card('⑥', '採用側に伝わる言葉', data.communication.headline, data.communication.body, false);
+    if (communication) {
+      html += card('⑥', '採用側に伝わる言葉', communication.headline, communication.body, false);
     }
 
-    const extra = Array.isArray(data.additional_discoveries) ? data.additional_discoveries : [];
+    const extra = (Array.isArray(raw.additional_discoveries) ? raw.additional_discoveries : []).map(safeParse).filter(Boolean);
     if (extra.length > 0) {
       extra.forEach(function(d) {
         html += card('＋', '追加の発見', d.headline, d.body, false);

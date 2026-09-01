@@ -149,13 +149,13 @@
 
     html += '<div class="cta-inline"><a href="' + payUrl + '" class="btn-inline">残りの項目を解除して読む（¥3,300税込）</a></div>';
 
-    // ⑤ environment_criteria（有料・ロック）
+    // ③ environment_criteria（有料・ロック）
     if (environmentCriteria) {
-      html += lockedCard('⑤', '面接で確認すべきこと', environmentCriteria.headline, environmentCriteria.body);
+      html += lockedCard('③', '面接で確認すべきこと', environmentCriteria.headline, environmentCriteria.body);
     }
-    // ⑥ communication（有料・ロック）
+    // ④ communication（有料・ロック）
     if (communication) {
-      html += lockedCard('⑥', '採用側に伝わる言葉', communication.headline, communication.body);
+      html += lockedCard('④', '採用側に伝わる言葉', communication.headline, communication.body);
     }
     // 追加の発見（有料・ロック・可変数）
     const extra = (Array.isArray(raw.additional_discoveries) ? raw.additional_discoveries : []).map(safeParse).filter(Boolean);
@@ -167,9 +167,8 @@
 
     // 解除リストは実データに応じて動的に組み立てる
     let unlockHtml = '';
-    unlockHtml += '<li>' + CHECK_SVG + '<span>⑤ 面接で確認すべきこと</span></li>';
-    unlockHtml += '<li>' + CHECK_SVG + '<span>⑥ 採用側に伝わる言葉</span></li>';
-    if (extra.length > 0) {
+    unlockHtml += '<li>' + CHECK_SVG + '<span>③ 面接で確認すべきこと</span></li>';
+    unlockHtml += '<li>' + CHECK_SVG + '<span>④ 採用側に伝わる言葉</span></li>';    if (extra.length > 0) {
       unlockHtml += '<li>' + CHECK_SVG + '<span>追加の発見（' + extra.length + '件）</span></li>';
     }
     unlockList.innerHTML = unlockHtml;
